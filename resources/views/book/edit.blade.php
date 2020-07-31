@@ -9,7 +9,7 @@
                <div class="card-body">
                     <form method="POST" action="{{route('book.update',[$book])}}">
                         Title: <div class="form-group">
-                            <input type="text" name="book_title"  class="form-control" value="{{$book->title}}">
+                            <input type="text" name="book_title"  class="form-control" value="{{old('book_title',$book->title)}}">
                             <small class="form-text text-muted">The name of the book.</small>
                             </div>
                         ISBN: <input type="text" name="book_isbn" value="{{$book->isbn}}">

@@ -8,7 +8,7 @@
                <div class="card-header">Create the book</div>
                <div class="card-body">
                     <form method="POST" action="{{route('book.store')}}">
-                        Title: <input type="text" name="book_title">
+                        Title: <input type="text" name="book_title" value="{{old('book_title')}}">
                         ISBN: <input type="text" name="book_isbn">
                         Pages: <input type="text" name="book_pages">
                         About: <textarea name="book_about" id="summernote"></textarea>

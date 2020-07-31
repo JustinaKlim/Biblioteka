@@ -7,9 +7,10 @@
            <div class="card">
                <div class="card-header">Create the book author</div>
                <div class="card-body">
-                <form method="POST" action="{{route('author.store')}}">
-                    Name: <input type="text" name="author_name">
-                    Surname: <input type="text" name="author_surname">
+                <form method="POST" action="{{route('author.store')}}" enctype="multipart/form-data">
+                    Name: <input type="text" name="author_name" value="{{old('author_name')}}">
+                    Surname: <input type="text" name="author_surname" value="{{old('author_surname')}}">
+                    Portret: <input type="file" name="portret">
                     @csrf
                     <button type="submit">ADD</button>
                  </form>

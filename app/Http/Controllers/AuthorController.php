@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Author;
+use Validator;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -18,6 +19,9 @@ class AuthorController extends Controller
        return view('author.index', ['authors' => $authors]);
 
     }
+    
+
+ 
 
     /**
      * Show the form for creating a new resource.
@@ -39,8 +43,31 @@ class AuthorController extends Controller
     public function store(Request $request)
     {
         $author = new Author;
+        $validator = Validator::make($request->all(),
+        [
+            'author_name' => ['required', 'min:3', 'max:64'],
+            'author_surname' => ['required', 'min:3', 'max:64'],
+        ],
+        [
+        'author_name.min' => 'Autoriaus vardas per trumpas!'
+        ]
+        );
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        }
+
         $author->name = $request->author_name;
         $author->surname = $request->author_surname;
+        $author->portret = '';
+
+        if ($request->hasFile('portret')) {
+            $image = $request->file('portret');
+            $name = $request->file('portret')->getClientOriginalName();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+            $author->portret = $name;
+        }
         $author->save();
         return redirect()->route('author.index')->with('success_message', 'Sekmingai įrašytas.');
     }
@@ -76,11 +103,24 @@ class AuthorController extends Controller
      */
     public function update(Request $request, Author $author)
     {
-        $author->name = $request->author_name;
-       $author->surname = $request->author_surname;
-       $author->save();
-       return redirect()->route('author.index')->with('success_message', 'Sėkmingai pakeistas.');
+       $validator = Validator::make($request->all(),
+       [
+           'author_name' => ['required', 'min:3', 'max:64'],
+           'author_surname' => ['required', 'min:3', 'max:64'],
+       ],
+        [
+        'author_name.min' => 'Autoriaus vardas per trumpas!'
+        ]
+       );
+       if ($validator->fails()) {
+           $request->flash();
+           return redirect()->back()->withErrors($validator);
     }
+    $author->name = $request->author_name;
+    $author->surname = $request->author_surname;
+    $author->save();
+    return redirect()->route('author.index')->with('success_message', 'Sėkmingai pakeistas.');
+}
 
     /**
      * Remove the specified resource from storage.
